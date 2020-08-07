@@ -14,9 +14,9 @@ class RightWidget(QFrame):
     def __init__(self, parent, left_menu=QFrame):
         super().__init__(parent)
 
-        self.setStyleSheet('border: 0px solid white')
+        self.setStyleSheet('border: 0px solid white; background-color: rgba(0, 0, 0, 0)')
 
-        self.resize(1280 - left_menu.width() - 10, 720)
+        self.resize(1280 - left_menu.width(), 720)
         self.move(1280 - self.width(), 0)
 
         # self.find_line = QLineEdit(parent)

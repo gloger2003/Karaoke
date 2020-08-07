@@ -21,24 +21,13 @@ class MediaWidget(RightWidget.RightWidget):
         self.scroll  = QScrollArea(self)
         self.content = QWidget(self.scroll)
 
-        self.vbox = QGridLayout()
+        self.vbox = QVBoxLayout()
+        self.vbox.setAlignment(QtCore.Qt.AlignHCenter)
         self.vbox.setSpacing(30)
-
-
-        
-        names = [a for a in range(50)]
-        positions = [(i,j) for i in range(int(len(names) / 4) + 1) for j in range(4)]
-        for position, name in zip(positions, names):
-            if name == '':
-                continue
-            button = MediaButton(self.content)
-            self.vbox.addWidget(button, *position)
-
-
 
         self.content.setLayout(self.vbox)
         self.content.setStyleSheet('color: white')
-        self.content.resize(self.content.width(), int(len(names) / 4 * 320))
+        # self.content.resize(self.content.width(), int(len(names) / 4 * 320))
         self.content.setContentsMargins(0, 30, 0, 30)
 
         self.scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -47,16 +36,55 @@ class MediaWidget(RightWidget.RightWidget):
         self.scroll.setGeometry(0, 0, self.width(), self.height())
         self.scroll.setStyleSheet('background-color: rgba(0, 0, 0, 0); border: 0px solid')
         self.scroll.setWidget(self.content)
+
+        self.get_media()
         self.scroll.show()
+
+    def get_media(self):
+        import json
+
+        path = 'D:/Видео'
+
+        list_dir = os.listdir(path)
+
+        files = [file for file in list_dir if file.find('.mp4') != -1]
+
+        path_files = [path + '/' + k for k in files]
+
+        try:
+            with open('descs.json', 'r', encoding='utf-8') as f:
+                data = json.loads(f.read())
+        except FileNotFoundError:
+            with open('descs.json', 'w', encoding='utf-8') as f:
+                data = {}
+                for filename in files:
+                    data[filename] = {
+                        'Creator' : '',
+                        'Name'    : '',
+                        'Genre'   : '',
+                        'Date'    : '',
+                        'Image'   : ''
+                    }
+                json.dump(data, f, indent=2, ensure_ascii=False)
+
+        for k in range(len(files)):
+            button = MediaButton(self.content, path_files[k], data[files[k]])
+            self.vbox.addWidget(button)
+
+
 
 
 
 class MediaButton(QPushButton):
-    def __init__(self, parent):
+    def __init__(self, parent, path, data):
         super().__init__(parent)
 
-        self.setFixedSize(200, 300)
-        self.setStyleSheet('background-color: rgb(60, 60, 60)')
+        self.data = data
+        self.path = path
+
+        self.setFixedSize(parent.width() - 40, 100)
+        self.setStyleSheet('background-color: rgb(60, 60, 60); color: white')
+        self.setFont(QFont('oblique', 13))
 
         self.shadow = QGraphicsDropShadowEffect()
         self.shadow.setBlurRadius(20)
@@ -77,7 +105,11 @@ class MediaButton(QPushButton):
         self.anim_borders.setDuration(100)
         self.anim_borders.valueChanged.connect(self.hover_button_restyle)
 
-
+        self.description = QLabel(self)
+        self.description.setGeometry(0, 0, self.width(), self.height())
+        self.description.setAlignment(QtCore.Qt.AlignCenter)
+        self.description.setFont(QFont('oblique', 13))
+        self.write_description()
 
     def enterEvent(self, a0):
         self.anim_borders.setDirection(self.anim_borders.Forward)
@@ -104,3 +136,35 @@ class MediaButton(QPushButton):
             border          : 1px solid rgba(255, 130, 0, {level});;
             '''
         )
+    
+    def write_description(self):
+        try:
+            desc = ''
+            translate = {
+                'Name'    : 'Название',
+                'Creator' : 'Создатель',
+                'Genre'   : 'Жанр',
+                'Date'    : 'Дата выпуска',
+            }
+
+            desc = f"{self.data['Creator']} - {self.data['Name']}\n{self.data['Genre']}\n{self.data['Date']}"
+
+            self.description.setText(desc)
+            self.update()
+        except FileNotFoundError as e:
+            pass
+
+
+
+
+
+
+
+    # app.quit()
+
+
+if __name__ == "__main__":
+    app = QApplication([])
+    get_media().start()
+    sys.exit(app.exec_())
+    pass

@@ -49,7 +49,11 @@ class LeftMenuButton(QPushButton):
             border-bottom   : rgba(255, 130, 0, 0);
             '''
         )
-        if connect: self.clicked.connect(lambda: connect[0](*connect[1]))
+        self.connect = connect
+        if connect: 
+            self.clicked.connect(lambda: self.run())
+
+
         self.setFixedHeight(100)
         self.setFont(QFont('oblique', 15))
         self.setText(text)
@@ -74,7 +78,7 @@ class LeftMenuButton(QPushButton):
 
         self.anim_shadow = QVariantAnimation()
         self.anim_shadow.setStartValue(0)
-        self.anim_shadow.setEndValue(10)
+        self.anim_shadow.setEndValue(5)
         self.anim_shadow.setDuration(100)
         self.anim_shadow.valueChanged.connect(self.shadow_button_restyle)
 
@@ -113,4 +117,9 @@ class LeftMenuButton(QPushButton):
     def shadow_button_restyle(self, level):
         self.shadow.setYOffset(level)
 
-    
+    def run(self):
+        try:
+            self.wid.deleteLater()
+            self.wid = self.connect[0](*self.connect[1])
+        except Exception as e:
+            self.wid = self.connect[0](*self.connect[1])
