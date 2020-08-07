@@ -21,7 +21,7 @@ class Window(QMainWindow):
 
         self.central_widget = QWidget(self)
 
-        self.main_menu = MainMenu.MainMenu(self.central_widget)
+        self.main_menu = MainMenu.MainMenu(self.central_widget, app)
 
         # self.central_widget.setLayout(self.main_menu.vbox_layout)
         self.setCentralWidget(self.central_widget)

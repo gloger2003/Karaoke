@@ -9,17 +9,18 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtMultimedia import *
 from PyQt5.QtMultimediaWidgets import *
 
+import MediaWidget
 
 
 class LeftMenu(QFrame):
-    def __init__(self, parent):
+    def __init__(self, parent, app=QApplication):
         super().__init__(parent)
 
         self.setMinimumSize(300, 720)
 
         self.shadow = QGraphicsDropShadowEffect()
         self.shadow.setBlurRadius(15)
-        self.shadow.setColor(QColor(0, 0, 0))
+        self.shadow.setColor(QColor(10, 10, 10))
         self.shadow.setYOffset(0.0)
         self.setGraphicsEffect(self.shadow)
 
@@ -29,10 +30,11 @@ class LeftMenu(QFrame):
         self.button_layout.setSpacing(0)
         self.setLayout(self.button_layout)
 
-        self.button_layout.addWidget(LeftMenuButton(self, 'Медиатека', None))
-        self.button_layout.addWidget(LeftMenuButton(self, 'Настройки', None))
-        self.button_layout.addWidget(LeftMenuButton(self, 'Помощь', None))
-        self.button_layout.addWidget(LeftMenuButton(self, 'Выход', None))
+        self.button_layout.addWidget(LeftMenuButton(self, 'Медиатека',  [MediaWidget.MediaWidget, (parent, self)]))
+        self.button_layout.addWidget(LeftMenuButton(self, 'Поиск',      None))
+        self.button_layout.addWidget(LeftMenuButton(self, 'Настройки',  None))
+        self.button_layout.addWidget(LeftMenuButton(self, 'Помощь',     None))
+        self.button_layout.addWidget(LeftMenuButton(self, 'Выход',      [app.quit, ()]))
 
 
 class LeftMenuButton(QPushButton):
@@ -47,14 +49,15 @@ class LeftMenuButton(QPushButton):
             border-bottom   : rgba(255, 130, 0, 0);
             '''
         )
+        if connect: self.clicked.connect(lambda: connect[0](*connect[1]))
         self.setFixedHeight(100)
         self.setFont(QFont('oblique', 15))
         self.setText(text)
 
         self.shadow = QGraphicsDropShadowEffect()
         self.shadow.setBlurRadius(15)
-        self.shadow.setColor(QColor(0, 0, 0))
-        # self.shadow.setYOffset()
+        self.shadow.setColor(QColor(10, 10, 10))
+        self.shadow.setYOffset(0)
         self.setGraphicsEffect(self.shadow)
 
         self.anim_borders = QVariantAnimation()
@@ -95,7 +98,6 @@ class LeftMenuButton(QPushButton):
         return super().leaveEvent(a0)
 
     def hover_button_restyle(self, level):
-        print(level)
         self.setStyleSheet(
             f'''
             background-color: rgb(30, 30, 30);

@@ -12,7 +12,7 @@ from PyQt5.QtMultimediaWidgets import *
 import LeftMenu
 
 class MainMenu(QWidget):
-    def __init__(self, parent):
+    def __init__(self, parent, app):
         super().__init__(parent)
         
         self.resize(640, 480)
@@ -25,7 +25,7 @@ class MainMenu(QWidget):
         self.shadow.setBlurRadius(15)
         self.shadow.setColor(QColor(0, 0, 0))
 
-        self.left_menu = LeftMenu.LeftMenu(self.frame)
+        self.left_menu = LeftMenu.LeftMenu(self.frame, app)
 
         self.vbox_layout = QVBoxLayout(parent)
         self.vbox_layout.setContentsMargins(0, 0, 0, 0)
