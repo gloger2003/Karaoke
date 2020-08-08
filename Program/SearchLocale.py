@@ -50,7 +50,7 @@ class SearchLocale(QFrame):
         self.scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.scroll.setWidgetResizable(True)
-        self.scroll.setGeometry(0, 0, self.width(), self.height())
+        self.scroll.setGeometry(0, 0, self.media_frame.width(), self.media_frame.height())
         self.scroll.setStyleSheet('background-color: rgba(0, 0, 0, 0); border: 0px solid')
         self.scroll.setWidget(self.content)
 

@@ -2,15 +2,17 @@ import os
 import sys
 
 import PyQt5
-from PyQt5 import QtCore, QtGui, QtWidgets, QtMultimedia, QtMultimediaWidgets
+import requests
+from PyQt5 import QtCore, QtGui, QtMultimedia, QtMultimediaWidgets, QtWidgets
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
 from PyQt5.QtMultimedia import *
 from PyQt5.QtMultimediaWidgets import *
+from PyQt5.QtWidgets import *
 
 import RightWidget
 import VideoPlayer
+
 
 class MediaWidget(RightWidget.RightWidget):
     def __init__(self, parent, left_menu):
@@ -109,9 +111,16 @@ class MediaButton(QPushButton):
         self.anim_borders.valueChanged.connect(self.hover_button_restyle)
 
         self.description = QLabel(self)
-        self.description.setGeometry(0, 0, self.width(), self.height())
+        self.description.setGeometry(180, 0, self.width() - 200, self.height())
         self.description.setAlignment(QtCore.Qt.AlignCenter)
         self.description.setFont(QFont('oblique', 13))
+        self.description.setStyleSheet('background-color: rgba(0, 0, 0, 0); border: 0px solid black')
+
+        self.image_label = QLabel(self)
+        self.image_label.setGeometry(10, 10, 160, 80)
+        self.image_label.setStyleSheet('background-color: rgba(0, 0, 0, 0); border-radius: 0px')
+        self.image_label.setScaledContents(True)
+
         self.write_description()
 
     def enterEvent(self, a0):
@@ -154,7 +163,19 @@ class MediaButton(QPushButton):
             desc = f"{self.data['Creator']} - {self.data['Name']}\n{self.data['Genre']}\n{self.data['Date']}"
 
             self.description.setText(desc)
-            self.update()
+
+            if self.data['Image'] != '':
+                url = self.data['Image']
+
+                if url.find('http') != -1:
+                    image  = QImage().fromData(requests.get(url).content)
+                    pixmap = QPixmap().fromImage(image)
+                else:
+                    pixmap = QPixmap(url)
+
+                print(pixmap.size())
+                self.image_label.setPixmap(pixmap)
+                # self.image_label.setP(QSize(50, 50))
         except FileNotFoundError as e:
             pass
 

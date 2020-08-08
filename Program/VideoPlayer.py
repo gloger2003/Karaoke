@@ -92,8 +92,10 @@ class Window(QMainWindow):
         self.mediaPlayer.setPosition(position)
 
     def handleError(self):
-        self.playButton.setEnabled(False)
-        self.errorLabel.setText("Error: " + self.mediaPlayer.errorString())
+        # self.playButton.setEnabled(False)
+        # self.errorLabel.setText("Error: " + self.mediaPlayer.errorString())
+        print("Error: " + self.mediaPlayer.errorString())
+        pass
 
 
 

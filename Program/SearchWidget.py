@@ -13,6 +13,7 @@ import RightWidget
 import VideoPlayer
 import SearchLine
 import SearchLocale
+import SearchYouTube
 from MediaWidget import MediaButton
 
 
@@ -24,8 +25,8 @@ class SearchWidget(RightWidget.RightWidget):
         self.vbox.setAlignment(QtCore.Qt.AlignCenter)
         self.vbox.setSpacing(30)
 
-        self.search_locale_button  = Button(self, 'Найти на компьютере', [SearchLocale.SearchLocale, (self, )])
-        self.search_youtube_button = Button(self, 'Найти в YouTube')
+        self.search_locale_button  = Button(self, 'Найти на компьютере',    [SearchLocale.SearchLocale,     (self, )])
+        self.search_youtube_button = Button(self, 'Найти в YouTube',        [SearchYouTube.SearchYouTube,   (self, )])
 
         self.vbox.addWidget(self.search_locale_button)
         self.vbox.addWidget(self.search_youtube_button)
