@@ -74,7 +74,7 @@ class SearchYouTube(QFrame):
                 'Date'    : '',
                 'Image'   : video['thumbnails'][0]
             }
-            url = 'https://youtube.com' + video['url_suffix']
+            url = 'https://www.youtube.com' + video['url_suffix']
 
             button = MediaButton(self.content, url, data)
             self.media_button_list.append(button)

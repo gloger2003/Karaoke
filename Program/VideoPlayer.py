@@ -9,8 +9,6 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtMultimedia import *
 from PyQt5.QtMultimediaWidgets import *
 
-
-
 class Window(QMainWindow):
     def __init__(self, parent=None, path=''):
         super().__init__(parent)
@@ -18,7 +16,6 @@ class Window(QMainWindow):
 
         desktop = QDesktopWidget()
         self.resize(desktop.width(), desktop.height())
-
 
         self.mediaPlayer = QMediaPlayer(self, QMediaPlayer.VideoSurface)
 
@@ -47,21 +44,25 @@ class Window(QMainWindow):
         self.mediaPlayer.durationChanged.connect(self.durationChanged)
         self.mediaPlayer.error.connect(self.handleError)
 
-        self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(path)))
+        self.set_media(path)
         self.mediaPlayer.play()
-
-        self.setMinimumSize(parent.width(), parent.height())
-
+        
+        print(self.rect(), self.wid.rect(), self.videoWidget.rect(), self.layout.geometry())
         self.show()
 
-    def openFile(self):
-        fileName, _ = QFileDialog.getOpenFileName(self, "Open Movie",
-                QDir.homePath())
+    def set_media(self, url):
+        if url != '':
+            if url.find('http') == -1:
+                self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(url)))
+            else:
+                from pytube import YouTube
+                from threading import Thread
 
-        if fileName != '':
-            self.mediaPlayer.setMedia(
-                    QMediaContent(QUrl.fromLocalFile(fileName)))
-            self.playButton.setEnabled(True)
+                path  = sys.path[0] + '/Songs'
+                video = YouTube(url)
+                name = video.streams.filter(res='720p', subtype='mp4').first().url
+                # print(name)
+                self.mediaPlayer.setMedia(QMediaContent(QUrl(name)))
 
     def closeEvent(self, a0):
         self.deleteLater()
@@ -92,9 +93,7 @@ class Window(QMainWindow):
         self.mediaPlayer.setPosition(position)
 
     def handleError(self):
-        # self.playButton.setEnabled(False)
-        # self.errorLabel.setText("Error: " + self.mediaPlayer.errorString())
-        print("Error: " + self.mediaPlayer.errorString())
+        self.close()
         pass
 
 
