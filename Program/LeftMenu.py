@@ -10,6 +10,7 @@ from PyQt5.QtMultimedia import *
 from PyQt5.QtMultimediaWidgets import *
 
 import MediaWidget
+import SearchWidget
 
 
 class LeftMenu(QFrame):
@@ -30,16 +31,24 @@ class LeftMenu(QFrame):
         self.button_layout.setSpacing(0)
         self.setLayout(self.button_layout)
 
-        self.button_layout.addWidget(LeftMenuButton(self, 'Медиатека',  [MediaWidget.MediaWidget, (parent, self)]))
-        self.button_layout.addWidget(LeftMenuButton(self, 'Поиск',      None))
-        self.button_layout.addWidget(LeftMenuButton(self, 'Настройки',  None))
-        self.button_layout.addWidget(LeftMenuButton(self, 'Помощь',     None))
-        self.button_layout.addWidget(LeftMenuButton(self, 'Выход',      [app.quit, ()]))
+        self.button_list = [
+            LeftMenuButton(self, 'Медиатека',  [MediaWidget.MediaWidget,   (parent, self)]),
+            LeftMenuButton(self, 'Поиск',      [SearchWidget.SearchWidget, (parent, self)]),
+            LeftMenuButton(self, 'Настройки',  None),
+            LeftMenuButton(self, 'Помощь',     None),
+            LeftMenuButton(self, 'Выход',      [app.quit, ()]),
+        ]
+
+        for button in self.button_list:
+            self.button_layout.addWidget(button)
+        
 
 
 class LeftMenuButton(QPushButton):
     def __init__(self, parent, text, connect):
         super().__init__(parent)
+
+        self.left_menu = parent
 
         self.setStyleSheet(
             '''
@@ -119,7 +128,10 @@ class LeftMenuButton(QPushButton):
 
     def run(self):
         try:
-            self.wid.deleteLater()
+            for k in self.left_menu.button_list:
+                try:
+                    k.wid.deleteLater()
+                except: pass
             self.wid = self.connect[0](*self.connect[1])
         except Exception as e:
             self.wid = self.connect[0](*self.connect[1])

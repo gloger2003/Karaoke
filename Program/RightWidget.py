@@ -19,8 +19,4 @@ class RightWidget(QFrame):
         self.resize(1280 - left_menu.width(), 720)
         self.move(1280 - self.width(), 0)
 
-        # self.find_line = QLineEdit(parent)
-        # self.find_line.setGeometry(self.x(), 0, self.width(), 30)
-        # self.find_line.show()
-
         self.show()

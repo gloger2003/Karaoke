@@ -10,6 +10,7 @@ from PyQt5.QtMultimedia import *
 from PyQt5.QtMultimediaWidgets import *
 
 import RightWidget
+import VideoPlayer
 
 class MediaWidget(RightWidget.RightWidget):
     def __init__(self, parent, left_menu):
@@ -22,7 +23,7 @@ class MediaWidget(RightWidget.RightWidget):
         self.content = QWidget(self.scroll)
 
         self.vbox = QVBoxLayout()
-        self.vbox.setAlignment(QtCore.Qt.AlignHCenter)
+        self.vbox.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
         self.vbox.setSpacing(30)
 
         self.content.setLayout(self.vbox)
@@ -43,7 +44,7 @@ class MediaWidget(RightWidget.RightWidget):
     def get_media(self):
         import json
 
-        path = 'D:/Видео'
+        path = sys.path[0] + '/Songs'
 
         list_dir = os.listdir(path)
 
@@ -82,8 +83,10 @@ class MediaButton(QPushButton):
         self.data = data
         self.path = path
 
+        self.clicked.connect(lambda: VideoPlayer.Window(parent, path))
+
         self.setFixedSize(parent.width() - 40, 100)
-        self.setStyleSheet('background-color: rgb(60, 60, 60); color: white')
+        self.setStyleSheet('background-color: rgb(60, 60, 60); color: white; border: 1px solid rgba(60, 60, 60, 255); border-radius: 10px')
         self.setFont(QFont('oblique', 13))
 
         self.shadow = QGraphicsDropShadowEffect()
@@ -101,8 +104,8 @@ class MediaButton(QPushButton):
 
         self.anim_borders = QVariantAnimation()
         self.anim_borders.setStartValue(0)
-        self.anim_borders.setEndValue(255)
-        self.anim_borders.setDuration(100)
+        self.anim_borders.setStartValue(QRect(60, 60, 60, 255))
+        self.anim_borders.setEndValue(QRect(255, 130, 0, 255))
         self.anim_borders.valueChanged.connect(self.hover_button_restyle)
 
         self.description = QLabel(self)
@@ -128,12 +131,13 @@ class MediaButton(QPushButton):
     def shadow_button_restyle(self, level):
         self.shadow.setOffset(level, level)
 
-    def hover_button_restyle(self, level):
+    def hover_button_restyle(self, QRect=QRect):
         self.setStyleSheet(
             f'''
             background-color: rgb(60, 60, 60);
             color           : white;
-            border          : 1px solid rgba(255, 130, 0, {level});;
+            border          : 1px solid rgba({QRect.x()}, {QRect.y()}, {QRect.width()}, {QRect.height()});
+            border-radius   : 10px
             '''
         )
     
