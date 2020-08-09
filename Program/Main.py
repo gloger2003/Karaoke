@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtMultimedia import *
 from PyQt5.QtMultimediaWidgets import *
 
-import MainMenu
+import SignWidget
 
 
 class Window(QMainWindow):
@@ -17,13 +17,12 @@ class Window(QMainWindow):
         super().__init__(parent)
         
         self.setWindowTitle("Karaoke")
-        self.setFixedSize(1280, 720)
+        self.setFixedSize(680, 720)
 
         self.central_widget = QWidget(self)
 
-        self.main_menu = MainMenu.MainMenu(self.central_widget, app)
+        self.main_menu = SignWidget.SignWidget(self.central_widget, app)
 
-        # self.central_widget.setLayout(self.main_menu.vbox_layout)
         self.setCentralWidget(self.central_widget)
 
         self.show()

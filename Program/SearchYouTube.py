@@ -54,17 +54,41 @@ class SearchYouTube(QFrame):
         self.scroll.setWidget(self.content)
 
         self.search_line_youtube = SearchLine.SearchLine(self)
-        self.search_line_youtube.returnPressed.connect(self.check_media)
+
+        self.thread = CheckMedia(self, self.media_button_list, self.search_line_youtube.text())
+        self.thread.finished.connect(self.add_buttons)
+
+        self.search_line_youtube.returnPressed.connect(self.thread.start)
 
         self.show()
 
-    def check_media(self):
+
+    def add_buttons(self):
+        buttons = []
+        if len(self.media_button_list) > 0:
+            for k in self.media_button_list:
+                button = MediaButton(self.content, *k)
+                buttons.append(button)
+                self.vbox.addWidget(button)
+            self.media_button_list = button
+
+
+class CheckMedia(QThread):
+    def __init__(self, parent, media_button_list, text):
+        super().__init__(parent)
+        self.text              = text
+        self.parent            = parent
+        self.media_button_list = media_button_list
+
+    def run(self):
         for button in self.media_button_list:
             try: 
                 button.deleteLater()
-            except RuntimeError: pass
+            except (RuntimeError, AttributeError): pass
+        
+        self.media_button_list = []
 
-        results = YoutubeSearch(self.search_line_youtube.text() + ' Калинка Караоке', max_results=10).to_dict()
+        results = YoutubeSearch(self.text + ' Калинка Караоке', max_results=10).to_dict()
         for video in results:
             if video['channel'] == 'Калинка Караоке':
                 data = {
@@ -76,7 +100,6 @@ class SearchYouTube(QFrame):
                 }
                 url = 'https://www.youtube.com' + video['url_suffix']
 
-                button = MediaButton(self.content, url, data)
-                self.media_button_list.append(button)
-                self.vbox.addWidget(button)
-        pass
+                # button = MediaButton(self.content, url, data)
+                self.media_button_list.append((url, data))
+                # self.vbox.addWidget(button)

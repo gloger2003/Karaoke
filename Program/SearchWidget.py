@@ -25,7 +25,7 @@ class SearchWidget(RightWidget.RightWidget):
         self.vbox.setAlignment(QtCore.Qt.AlignCenter)
         self.vbox.setSpacing(30)
 
-        self.search_locale_button  = Button(self, 'Найти на компьютере',    [SearchLocale.SearchLocale,     (self, )])
+        self.search_locale_button  = Button(self, 'Найти в медиатеке',      [SearchLocale.SearchLocale,     (self, )])
         self.search_youtube_button = Button(self, 'Найти в YouTube',        [SearchYouTube.SearchYouTube,   (self, )])
 
         self.vbox.addWidget(self.search_locale_button)
