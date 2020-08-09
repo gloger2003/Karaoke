@@ -64,19 +64,19 @@ class SearchYouTube(QFrame):
                 button.deleteLater()
             except RuntimeError: pass
 
-        results = YoutubeSearch(self.search_line_youtube.text(), max_results=10).to_dict()
+        results = YoutubeSearch(self.search_line_youtube.text() + ' Калинка Караоке', max_results=10).to_dict()
         for video in results:
-            
-            data = {
-                'Creator' : video['channel'],
-                'Name'    : video['title'] if len(video['title']) < 50 else video['title'][0:47] + '...',
-                'Genre'   : '',
-                'Date'    : '',
-                'Image'   : video['thumbnails'][0]
-            }
-            url = 'https://www.youtube.com' + video['url_suffix']
+            if video['channel'] == 'Калинка Караоке':
+                data = {
+                    'Creator' : '',
+                    'Name'    : video['title'] if len(video['title']) < 50 else video['title'][0:47] + '...',
+                    'Genre'   : '',
+                    'Date'    : '',
+                    'Image'   : video['thumbnails'][0]
+                }
+                url = 'https://www.youtube.com' + video['url_suffix']
 
-            button = MediaButton(self.content, url, data)
-            self.media_button_list.append(button)
-            self.vbox.addWidget(button)
+                button = MediaButton(self.content, url, data)
+                self.media_button_list.append(button)
+                self.vbox.addWidget(button)
         pass

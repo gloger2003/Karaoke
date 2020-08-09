@@ -173,6 +173,9 @@ class MediaButton(QPushButton):
                 else:
                     pixmap = QPixmap(url)
                 self.image_label.setPixmap(pixmap)
+            else:
+                self.image_label.hide()
+                self.description.setGeometry(0, 0, self.width(), self.height())
                 
         except FileNotFoundError as e:
             pass

@@ -47,7 +47,6 @@ class Window(QMainWindow):
         self.set_media(path)
         self.mediaPlayer.play()
         
-        print(self.rect(), self.wid.rect(), self.videoWidget.rect(), self.layout.geometry())
         self.show()
 
     def set_media(self, url):
@@ -60,7 +59,7 @@ class Window(QMainWindow):
 
                 path  = sys.path[0] + '/Songs'
                 video = YouTube(url)
-                name = video.streams.filter(res='720p', subtype='mp4').first().url
+                name = video.streams.filter(file_extension='mp4').first().url
                 # print(name)
                 self.mediaPlayer.setMedia(QMediaContent(QUrl(name)))
 
