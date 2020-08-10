@@ -12,6 +12,7 @@ from PyQt5.QtWidgets import *
 
 import RightWidget
 import VideoPlayer
+import ReadWriter
 
 
 class MediaWidget(RightWidget.RightWidget):
@@ -44,37 +45,13 @@ class MediaWidget(RightWidget.RightWidget):
         self.scroll.show()
 
     def get_media(self):
-        import json
+        data = ReadWriter.get_description()
 
-        path = sys.path[0] + '/Songs'
-
-        list_dir = os.listdir(path)
-
-        files = [file for file in list_dir if file.find('.mp4') != -1]
-
-        path_files = [path + '/' + k for k in files]
-
-        try:
-            with open('descs.json', 'r', encoding='utf-8') as f:
-                data = json.loads(f.read())
-        except FileNotFoundError:
-            with open('descs.json', 'w', encoding='utf-8') as f:
-                data = {}
-                for filename in files:
-                    data[filename] = {
-                        'Creator' : '',
-                        'Name'    : '',
-                        'Genre'   : '',
-                        'Date'    : '',
-                        'Image'   : ''
-                    }
-                json.dump(data, f, indent=2, ensure_ascii=False)
-
+        files, path_files = ReadWriter.get_media_from_dir()
+        
         for k in range(len(files)):
             button = MediaButton(self.content, path_files[k], data[files[k]])
             self.vbox.addWidget(button)
-
-
 
 
 

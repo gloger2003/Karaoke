@@ -14,7 +14,7 @@ import SearchWidget
 
 
 class LeftMenu(QFrame):
-    def __init__(self, parent, app=QApplication):
+    def __init__(self, parent, app=QApplication, is_admin=False):
         super().__init__(parent)
 
         self.setMinimumSize(300, 720)
@@ -31,21 +31,35 @@ class LeftMenu(QFrame):
         self.button_layout.setSpacing(0)
         self.setLayout(self.button_layout)
 
-        self.button_list = [
-            LeftMenuButton(self, 'Медиатека',  [MediaWidget.MediaWidget,   (parent, self)]),
-            LeftMenuButton(self, 'Поиск',      [SearchWidget.SearchWidget, (parent, self)]),
-            LeftMenuButton(self, 'Настройки',  None),
-            LeftMenuButton(self, 'Помощь',     None),
-            LeftMenuButton(self, 'Выход',      [app.quit, ()]),
-        ]
+        self.button_list = []
 
-        for button in self.button_list:
+        button_height = 100
+
+        if is_admin:
+            button_height = 80
+            for button in [
+                LeftMenuButton(self, button_height, 'Добавить видео',       None),
+                LeftMenuButton(self, button_height, 'Параметры поиска',     None),
+                LeftMenuButton(self, button_height, 'Параметры GUI',        None),
+                LeftMenuButton(self, button_height, 'Параметры входа',      None),
+            ]:  
+                self.button_list.append(button)
+                self.button_layout.addWidget(button)
+
+        for button in [
+            LeftMenuButton(self, button_height, 'Медиатека',  [MediaWidget.MediaWidget,   (parent, self)]),
+            LeftMenuButton(self, button_height, 'Поиск',      [SearchWidget.SearchWidget, (parent, self)]),
+            LeftMenuButton(self, button_height, 'Помощь',     None),
+            LeftMenuButton(self, button_height, 'Настройки',  None),
+            LeftMenuButton(self, button_height, 'Выход',      [app.quit, ()]),
+        ]:
+            self.button_list.append(button)
             self.button_layout.addWidget(button)
         
 
 
 class LeftMenuButton(QPushButton):
-    def __init__(self, parent, text, connect):
+    def __init__(self, parent, height, text, connect):
         super().__init__(parent)
 
         self.left_menu = parent
@@ -63,7 +77,7 @@ class LeftMenuButton(QPushButton):
             self.clicked.connect(lambda: self.run())
 
 
-        self.setFixedHeight(100)
+        self.setFixedHeight(height)
         self.setFont(QFont('oblique', 15))
         self.setText(text)
 
